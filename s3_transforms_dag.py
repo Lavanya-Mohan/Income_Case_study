@@ -67,7 +67,7 @@ SPARK_STEPS = [
         'HadoopJarStep': { 
             'Jar': 'command-runner.jar',
             'Args': ['spark-submit', 
-                     '--deploy-mode', 'client', 
+                     '--deploy-mode', 'cluster', 
                      '--jars', 's3://income-sales-data/airflow/scripts/mysql-connector-j-8.3.0.jar',
                      's3://income-sales-data/airflow/scripts/transform_etl.py'
                     ]
