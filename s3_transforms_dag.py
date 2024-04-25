@@ -2,14 +2,9 @@ from datetime import datetime
 
 from airflow import DAG
 from airflow.operators.dummy_operator import DummyOperator
-#from airflow.contrib.operators.emr_create_job_flow_operator import EmrCreateJobFlowOperator
 from airflow.providers.amazon.aws.operators.emr import EmrCreateJobFlowOperator
-#from airflow.contrib.operators.emr_add_steps_operator import EmrAddStepsOperator
-
 from airflow.providers.amazon.aws.operators.emr import EmrAddStepsOperator
-#from airflow.contrib.sensors.emr_step_sensor import EmrStepSensor
 from airflow.providers.amazon.aws.sensors.emr import EmrStepSensor
-#from airflow.contrib.operators.emr_terminate_job_flow_operator import EmrTerminateJobFlowOperator
 from airflow.providers.amazon.aws.operators.emr import EmrTerminateJobFlowOperator
 from airflow.utils.dates import days_ago
 
@@ -51,7 +46,7 @@ JOB_FLOW_OVERRIDES = {
                 'Market': 'SPOT',
                 'InstanceRole': 'CORE',
                 'InstanceType': 'm5.xlarge',
-                'InstanceCount': 2,
+                'InstanceCount': 3,
             }
         ],
         'KeepJobFlowAliveWhenNoSteps': True,
