@@ -160,6 +160,30 @@ if __name__ == '__main__':
     books_df_joined=books_df.join(books_ratings_df,books_df.Title ==  books_ratings_df.Title,"inner").drop(books_ratings_df.Title)
     books_data_mart=missing_values_imputation(books_df_joined)
 
+    #### NLP IMPUTATIONS ####
+    replacement_value = ""
+
+    col_onlystr_nourl_nonum = ['Title', 'description','authors','publisher','categories','User_id',]
+    for col_name in col_onlystr_nourl_nonum:
+        # Filter out full number values and URL links -- only string no numbers no urls
+        books_data_mart = books_data_mart.withColumn(col_name, when(col(col_name).isNull() | (col(col_name) == "") | (regexp_extract(col(col_name), r'^\d+$', 0) != "") | (regexp_extract(col(col_name), r'^((http|https|ftp):\/\/[^\s\/$.?#].[^\s]*)$', 0) != ""), replacement_value).otherwise(col(col_name)))
+
+    col_url = ['image', 'previewLink', 'infoLink',]
+    for col_name in col_url:
+        # Filter out non-URL values -- only url link
+        books_data_mart = books_data_mart.withColumn(col_name, when(col(col_name).isNull() | (col(col_name) == "") | (regexp_extract(col(col_name), r'^((http|https|ftp):\/\/[^\s\/$.?#].[^\s]*)$', 0) == ""), replacement_value).otherwise(col(col_name)))
+
+    col_onlyfloat_num = ['publishedDate','ratingsCount','review/score','review/time', 'Price']
+    for col_name in col_onlyfloat_num:
+        # Filter out non-numeric string values and URL links -- only float , number 
+        books_data_mart = books_data_mart.withColumn(col_name, when(col(col_name).isNull() | (col(col_name) == "") | (regexp_extract(col(col_name), r'^\d+(\.\d+)?$', 0) == "") | (regexp_extract(col(col_name), r'^((http|https|ftp):\/\/[^\s\/$.?#].[^\s]*)$', 0) != ""), replacement_value).otherwise(col(col_name)))
+
+    col_onlyfloat_num_slash = ['review/helpfulness',]
+    for col_name in col_onlyfloat_num_slash:
+        # Filter out non-numeric string values and URL links
+        books_data_mart = books_data_mart.withColumn(col_name, when(col(col_name).isNull() | (col(col_name) == "") | (regexp_extract(col(col_name), r'^\d+(\.\d+)?(/\d+(\.\d+)?)?$', 0) == "") | (regexp_extract(col(col_name), r'^((http|https|ftp):\/\/[^\s\/$.?#].[^\s]*)$', 0) != ""), replacement_value).otherwise(col(col_name)))
+
+
     #### TRANSFORM ELECTRONICS  ####
     df_sales=unionAll(*[sales_jan_df, sales_feb_df,sales_mar_df,sales_april_df,sales_may_df,sales_june_df
            ,sales_july_df,sales_aug_df,sales_sep_df,sales_oct_df,sales_nov_df,sales_dec_df])
