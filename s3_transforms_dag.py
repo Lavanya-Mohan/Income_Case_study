@@ -69,7 +69,7 @@ SPARK_STEPS = [
             'Args': ['spark-submit', 
                      '--deploy-mode', 'cluster', 
                      '--jars', 's3://income-sales-data/airflow/scripts/mysql-connector-j-8.3.0.jar',
-                     's3://income-sales-data/airflow/scripts/transform_etl.py'
+                     's3://income-sales-data/airflow/scripts/transform_etl_v2.py'
                     ]
         }
     }
